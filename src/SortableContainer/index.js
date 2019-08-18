@@ -233,6 +233,7 @@ export default function sortableContainer(
           updateBeforeSortStart,
           onSortStart,
           useWindowAsScrollContainer,
+          zoomFactor,
         } = this.props;
         const {node, collection} = active;
         const {isKeySorting} = this.manager;
@@ -259,8 +260,8 @@ export default function sortableContainer(
 
         this.node = node;
         this.margin = margin;
-        this.width = dimensions.width;
-        this.height = dimensions.height;
+        this.width = dimensions.width / zoomFactor;
+        this.height = dimensions.height / zoomFactor;
         this.marginOffset = {
           x: this.margin.left + this.margin.right,
           y: Math.max(this.margin.top, this.margin.bottom),
@@ -332,11 +333,11 @@ export default function sortableContainer(
             height: containerHeight,
           } = useWindowAsScrollContainer
             ? {
-              top: 0,
-              left: 0,
-              width: this.contentWindow.innerWidth,
-              height: this.contentWindow.innerHeight,
-            }
+                top: 0,
+                left: 0,
+                width: this.contentWindow.innerWidth,
+                height: this.contentWindow.innerHeight,
+              }
             : this.containerBoundingRect;
           const containerBottom = containerTop + containerHeight;
           const containerRight = containerLeft + containerWidth;
@@ -603,7 +604,12 @@ export default function sortableContainer(
     }
 
     animateNodes() {
-      const {transitionDuration, hideSortableGhost, onSortOver} = this.props;
+      const {
+        transitionDuration,
+        hideSortableGhost,
+        onSortOver,
+        zoomFactor,
+      } = this.props;
       const {containerScrollDelta, windowScrollDelta} = this;
       const nodes = this.manager.getOrderedRefs();
       const sortingOffset = {
@@ -754,7 +760,7 @@ export default function sortableContainer(
                 sortingOffset.left + windowScrollDelta.left + offset.width >=
                   edgeOffset.left)
             ) {
-              translate.x = -(this.width + this.marginOffset.x);
+              translate.x = -(this.width * zoomFactor + this.marginOffset.x);
               this.newIndex = index;
             } else if (
               mustShiftForward ||
@@ -762,7 +768,7 @@ export default function sortableContainer(
                 sortingOffset.left + windowScrollDelta.left <=
                   edgeOffset.left + offset.width)
             ) {
-              translate.x = this.width + this.marginOffset.x;
+              translate.x = this.width * zoomFactor + this.marginOffset.x;
 
               if (this.newIndex == null) {
                 this.newIndex = index;
@@ -776,7 +782,7 @@ export default function sortableContainer(
               sortingOffset.top + windowScrollDelta.top + offset.height >=
                 edgeOffset.top)
           ) {
-            translate.y = -(this.height + this.marginOffset.y);
+            translate.y = -(this.height * zoomFactor + this.marginOffset.y);
             this.newIndex = index;
           } else if (
             mustShiftForward ||
@@ -784,7 +790,7 @@ export default function sortableContainer(
               sortingOffset.top + windowScrollDelta.top <=
                 edgeOffset.top + offset.height)
           ) {
-            translate.y = this.height + this.marginOffset.y;
+            translate.y = this.height * zoomFactor + this.marginOffset.y;
             if (this.newIndex == null) {
               this.newIndex = index;
             }

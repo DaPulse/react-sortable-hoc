@@ -40,6 +40,7 @@ export const propTypes = {
   updateBeforeSortStart: PropTypes.func,
   useDragHandle: PropTypes.bool,
   useWindowAsScrollContainer: PropTypes.bool,
+  zoomFactor: PropTypes.number,
 };
 
 export const defaultProps = {
@@ -55,6 +56,7 @@ export const defaultProps = {
   shouldCancelStart: defaultShouldCancelStart,
   transitionDuration: 300,
   useWindowAsScrollContainer: false,
+  zoomFactor: 1,
 };
 
 export const omittedProps = Object.keys(propTypes);
